@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MelanieKamann - Colorfly Studio</title>
+  <style>
+    /* 1. RESET Y VARIABLES DE DISEÑO */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    :root {
+      --sidebar-bg: #221c30;       /* Violeta ultra oscuro para el panel izquierdo */
+      --sidebar-text: #e9e4f5;     /* Texto claro para la barra lateral */
+      --bg-workspace: #f6f4fa;     /* Área de trabajo gris lavanda suave */
+      --card-bg: #ffffff;
+      --texto-main: #1f182e;       /* Violeta profundo para textos principales */
+      --texto-muted: #6c5c85;      /* Tono lila medio */
+      --accent: #967bb6;           /* Lavanda de realce principal */
+      --accent-hover: #7e639f;
+      --borde: #e6e0f2;
+      --peligro: #e05c75;
+      --radio-premium: 12px;
+      --sombra-dashboard: 0 4px 12px rgba(31, 24, 46, 0.05);
+    }
+
+    body {
+      background-color: var(--bg-workspace);
+      color: var(--texto-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 2. ESTRUCTURA LAYOUT DASHBOARD */
+    .dashboard-layout {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+    }
+
+    @media (min-width: 992px) {
+      .dashboard-layout {
+        flex-direction: row;
+      }
+    }
+
+    /* BARRA LATERAL */
+    .sidebar {
+      background-color: var(--sidebar-bg);
+      color: var(--sidebar-text);
+      padding: 2.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    @media (min-width: 992px) {
+      .sidebar {
+        width: 320px;
+        min-height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        overflow-y: auto;
+      }
+    }
+
+    .brand-section h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #c3b1e1 0%, #967bb6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.25rem;
+    }
+
+    .brand-section p {
+      font-size: 0.85rem;
+      color: #a395be;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 700;
+    }
+
+    .nav-profile-card {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1.25rem;
+      border-radius: var(--radio-premium);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-profile-card h3 {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      color: #c3b1e1;
+    }
+
+    .nav-profile-card p {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #cdc5e0;
+    }
+
+    .badge-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .badge {
+      background: rgba(150, 123, 182, 0.2);
+      color: #c3b1e1;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* AREA DE TRABAJO CENTRAL */
+    .workspace {
+      flex: 1;
+      padding: 2rem;
+    }
+
+    @media (min-width: 992px) {
+      .workspace {
+        margin-left: 320px;
+        padding: 3rem;
+      }
+    }
+
+    .app-card {
+      background-color: var(--card-bg);
+      border-radius: var(--radio-premium);
+      box-shadow: var(--sombra-dashboard);
+      border: 1px solid var(--borde);
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--texto-main);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* PANEL DE CONTROL DEL APP */
+    .control-panel {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      background-color: #ede8f5;
+      padding: 1.5rem;
+      border-radius: var(--radio-premium);
+      margin-bottom: 2rem;
+      border: 1px solid var(--borde);
+      align-items: flex-end;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .input-group label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--texto-muted);
+    }
+
+    select {
+      padding: 0.7rem;
+      border-radius: 8px;
+      border: 1px solid var(--borde);
+      background-color: white;
+      font-size: 0.95rem;
+      color: var(--texto-main);
+      outline: none;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 1rem;
+      grid-column: 1 / -1;
+    }
+
+    button {
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-main {
+      background-color: var(--accent);
+      color: white;
+      flex: 2;
+    }
+
+    .btn-main:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .btn-secundario {
+      background-color: transparent;
+      color: var(--texto-main);
+      border: 1px solid var(--borde);
+      flex: 1;
+    }
+
+    .btn-secundario:hover {
+      background-color: #fcfbfe;
+      border-color: var(--accent);
+    }
+
+    /* CUADRÍCULA DE COLORES */
+    .colors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .color-pill {
+      border-radius: 10px;
+      height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0.75rem;
+      cursor: pointer;
+      border: 1px solid rgba(0,0,0,0.04);
+      transition: transform 0.2s ease;
+    }
+
+    .color-pill:hover {
+      transform: scale(1.03);
+    }
+
+    /* DISEÑO DE LA ETIQUETA SOLICITADA */
+    .tag-label {
+      background: rgba(237, 232, 245, 0.92); /* Fondo lavanda suave translúcido */
+      color: #4a3f5a;                        /* Texto violeta oscuro legible */
+      border: 1px solid #dcd1ed;             /* Borde sutil a juego */
+      padding: 0.4rem;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-family: monospace;
+      font-weight: 700;
+      text-align: center;
+      word-break: break-all;
+      box-shadow: 0 2px 4px rgba(110, 80, 150, 0.1);
+    }
+
+    /* HISTORIAL */
+    .saved-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .saved-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: #fcfbfe;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--borde);
+    }
+
+    .mini-palette {
+      display: flex;
+      flex: 1;
+      height: 35px;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .mini-stripe {
+      flex: 1;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    .btn-del {
+      background: transparent;
+      color: var(--texto-muted);
+      font-size: 1.3rem;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-del:hover { color: var(--peligro); }
+
+    /* SECCIÓN PROYECTOS */
+    .project-grid-view {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .project-box {
+      background: #fcfbfe;
+      border: 1px solid var(--borde);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border-left: 4px solid var(--accent);
+    }
+
+    .project-box h4 {
+      font-size: 1.05rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* TOAST */
+    .toast-popup {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background-color: var(--sidebar-bg);
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+    .toast-popup.active {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 0;
+      font-size: 0.8rem;
+      color: var(--texto-muted);
+      border-top: 1px solid var(--borde);
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    
+    <!-- BARRA LATERAL IZQUIERDA -->
+    <aside class="sidebar">
+      <div class="brand-section">
+        <h1>MelanieKamann</h1>
+        <p>Colorfly Studio v1.0</p>
+      </div>
+
+      <div class="nav-profile-card">
+        <h3>Acerca de mí</h3>
+        <p>Estudiante de desarrollo web enfocada en arquitectura frontend limpia, maquetación semántica y diseño de interfaces UX/UI.</p>
+      </div>
+
+      <div class="nav-profile-card">
+        <h3>Habilidades</h3>
+        <div class="badge-list">
+          <span class="badge">HTML5</span>
+          <span class="badge">CSS Grid</span>
+          <span class="badge">Flexbox</span>
+          <span class="badge">JavaScript</span>
+          <span class="badge">Git</span>
+        </div>
+      </div>
+
+      <div class="nav-profile-card">
+        <h3>Datos Curiosos</h3>
+        <p>Apasionada por la lingüística y el aprendizaje de múltiples culturas. Estudiando activamente Ruso, Inglés y Francés.</p>
+      </div>
+    </aside>
+
+    <!-- WORKSPACE CENTRAL -->
+    <main class="workspace">
+      
+      <!-- PALETA DE COLORES -->
+      <section class="app-card">
+        <div class="section-title">
+          <span>🎨</span> Generador de Paletas Dinámicas
+        </div>
+
+        <div class="control-panel">
+          <div class="input-group">
+            <label for="paletteSize">Muestras de Color</label>
+            <select id="paletteSize">
+              <option value="6">6 Colores</option>
+              <option value="8">8 Colores</option>
+              <option value="9">9 Colores</option>
+            </select>
+          </div>
