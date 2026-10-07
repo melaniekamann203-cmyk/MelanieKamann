@@ -7,7 +7,7 @@
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "test": "node --test",
-    "db:setup": "psql -U postgres -d bitacora -f sql/setup.sql -f sql/seed.sql"
+    "db:init": "node scripts/db-init.js"
   },
   "author": "Melanie Kamann",
   "license": "ISC",
@@ -19,5 +19,8 @@
   },
   "devDependencies": {
     "supertest": "^7.3.1"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }
