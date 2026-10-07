@@ -3,6 +3,10 @@
   "info": {
     "title": "Bitácora API",
     "version": "1.0.0",
+    "license": {
+      "name": "ISC",
+      "url": "https://opensource.org/licenses/ISC"
+    },
     "description": "API REST para gestionar autores y publicaciones de un blog. Proyecto Integrador del Módulo 2.\n\nTodos los errores responden con el formato `{ \"error\": \"mensaje\" }`; los errores de validación incluyen además `details`."
   },
   "servers": [
@@ -11,15 +15,19 @@
       "description": "Servidor local"
     }
   ],
+  "security": [],
   "tags": [
     {
-      "name": "Sistema"
+      "name": "Sistema",
+      "description": "Estado del servicio"
     },
     {
-      "name": "Authors"
+      "name": "Authors",
+      "description": "Autores del blog"
     },
     {
-      "name": "Posts"
+      "name": "Posts",
+      "description": "Publicaciones de cada autor"
     }
   ],
   "paths": {
@@ -36,7 +44,8 @@
           "503": {
             "description": "La base de datos no responde"
           }
-        }
+        },
+        "operationId": "getHealth"
       }
     },
     "/authors": {
@@ -73,7 +82,8 @@
           "500": {
             "$ref": "#/components/responses/ServerError"
           }
-        }
+        },
+        "operationId": "getAuthors"
       },
       "post": {
         "tags": [
@@ -110,7 +120,8 @@
           "500": {
             "$ref": "#/components/responses/ServerError"
           }
-        }
+        },
+        "operationId": "createAuthors"
       }
     },
     "/authors/{id}": {
@@ -151,7 +162,8 @@
           "500": {
             "$ref": "#/components/responses/ServerError"
           }
-        }
+        },
+        "operationId": "getAuthorsById"
       },
       "put": {
         "tags": [
@@ -191,7 +203,8 @@
           "500": {
             "$ref": "#/components/responses/ServerError"
           }
-        }
+        },
+        "operationId": "replaceAuthorsById"
       },
       "patch": {
         "tags": [
@@ -231,7 +244,8 @@
           "500": {
             "$ref": "#/components/responses/ServerError"
           }
-        }
+        },
+        "operationId": "updateAuthorsById"
       },
       "delete": {
         "tags": [
@@ -251,7 +265,8 @@
           "500": {
             "$ref": "#/components/responses/ServerError"
           }
-        }
+        },
+        "operationId": "deleteAuthorsById"
       }
     },
     "/authors/{id}/posts": {
@@ -303,7 +318,8 @@
           "500": {
             "$ref": "#/components/responses/ServerError"
           }
-        }
+        },
+        "operationId": "getAuthorsByIdPosts"
       }
     },
     "/posts": {
@@ -357,7 +373,8 @@
           "500": {
             "$ref": "#/components/responses/ServerError"
           }
-        }
+        },
+        "operationId": "getPosts"
       },
       "post": {
         "tags": [
@@ -391,7 +408,8 @@
           "500": {
             "$ref": "#/components/responses/ServerError"
           }
-        }
+        },
+        "operationId": "createPosts"
       }
     },
     "/posts/author/{authorId}": {
@@ -435,7 +453,8 @@
           "500": {
             "$ref": "#/components/responses/ServerError"
           }
-        }
+        },
+        "operationId": "getPostsAuthorByAuthorId"
       }
     },
     "/posts/{id}": {
@@ -476,7 +495,8 @@
           "500": {
             "$ref": "#/components/responses/ServerError"
           }
-        }
+        },
+        "operationId": "getPostsById"
       },
       "put": {
         "tags": [
@@ -513,7 +533,8 @@
           "500": {
             "$ref": "#/components/responses/ServerError"
           }
-        }
+        },
+        "operationId": "replacePostsById"
       },
       "patch": {
         "tags": [
@@ -550,7 +571,8 @@
           "500": {
             "$ref": "#/components/responses/ServerError"
           }
-        }
+        },
+        "operationId": "updatePostsById"
       },
       "delete": {
         "tags": [
@@ -570,7 +592,8 @@
           "500": {
             "$ref": "#/components/responses/ServerError"
           }
-        }
+        },
+        "operationId": "deletePostsById"
       }
     }
   },
