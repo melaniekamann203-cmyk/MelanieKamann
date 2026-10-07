@@ -30,6 +30,7 @@ proyecto-m2/
 │   ├── utils/HttpError.js     # Error con status HTTP
 │   ├── app.js                 # Configuración de Express
 │   └── server.js              # Arranque del servidor
+├── scripts/db-init.js         # Inicializa la base (setup + seed)
 ├── tests/api.test.js
 ├── .env.example
 └── package.json
@@ -44,13 +45,13 @@ La responsabilidad está separada en capas: **rutas → controladores → servic
    npm install
    ```
 2. Crear el archivo `.env` copiando `.env.example` y completar los datos de PostgreSQL.
-3. Crear la base de datos y cargar las tablas y los datos de ejemplo:
+3. Crear una base de datos vacía llamada `bitacora` (desde pgAdmin o con `createdb -U postgres bitacora`).
+4. Crear las tablas y cargar los datos de ejemplo:
    ```bash
-   createdb -U postgres bitacora
-   npm run db:setup
+   npm run db:init
    ```
-   (o ejecutar `sql/setup.sql` y `sql/seed.sql` desde pgAdmin)
-4. Iniciar el servidor:
+   Este script ejecuta `sql/setup.sql` y `sql/seed.sql` con la conexión del `.env`. También se pueden ejecutar esos archivos a mano desde pgAdmin.
+5. Iniciar el servidor:
    ```bash
    npm start        # producción
    npm run dev      # desarrollo, se reinicia al guardar
@@ -142,21 +143,41 @@ curl -X PATCH http://localhost:3000/posts/6 \
 curl "http://localhost:3000/posts?author_id=1&published=true"
 ```
 
+## Documentación OpenAPI
+
+La especificación está en `docs/openapi.json` (OpenAPI 3.0.3) y se puede probar en Swagger UI en `/docs`. Para validarla:
+
+```bash
+npx @redocly/cli lint docs/openapi.json
+```
+
 ## Tests
 
 ```bash
 npm test
 ```
 
-27 tests de integración con Supertest que cubren el CRUD completo de autores y posts, los filtros, las validaciones, los status codes y el borrado en cascada. Usan la base de datos configurada en `.env` y eliminan los datos que crean.
+31 tests de integración con Supertest que cubren el CRUD completo de autores y posts, los filtros, las validaciones, los status codes y el borrado en cascada. Usan la base de datos configurada en `.env` (tiene que estar inicializada con `npm run db:init`) y eliminan los datos que crean.
 
-## Deploy
+## Deploy en Railway
 
-La app lee `DATABASE_URL` si existe (Railway, Render, etc.), así que para desplegarla basta con:
+**URL de producción:** _pendiente: completar con la URL pública de Railway_
 
-1. Crear un servicio de PostgreSQL y ejecutar `sql/setup.sql` y `sql/seed.sql`.
-2. Crear el servicio de la app desde el repositorio, con esta carpeta como *Root Directory*.
-3. Definir la variable `DATABASE_URL` con la conexión de la base de datos.
+1. En [railway.app](https://railway.app), crear un proyecto nuevo con **Deploy from GitHub repo** y elegir este repositorio.
+   Railway despliega la rama `main`: si el código está en otra rama, elegirla en **Settings → Source → Branch** (o pasarla antes a `main`).
+2. En el servicio de la app, ir a **Settings → Root Directory** y escribir `proyecto-m2` (la carpeta donde está el `package.json`).
+3. En el mismo proyecto, agregar una base de datos con **+ New → Database → PostgreSQL**.
+4. En el servicio de la app, ir a **Variables** y agregar `DATABASE_URL` con el valor `${{Postgres.DATABASE_URL}}` (Railway lo completa solo).
+   - Si los logs muestran `The server does not support SSL connections`, agregar también `DB_SSL=false`.
+5. Inicializar la base de producción desde tu computadora: copiar la **`DATABASE_PUBLIC_URL`** del servicio de PostgreSQL (pestaña *Variables*) y ejecutar:
+   ```bash
+   DATABASE_URL="la-url-publica-copiada" npm run db:init
+   ```
+   En Windows PowerShell: `$env:DATABASE_URL="la-url-publica-copiada"; npm run db:init`
+6. En **Settings → Networking**, hacer clic en **Generate Domain** para obtener la URL pública.
+7. Verificar que funcione abriendo `https://<tu-dominio>/health` (tiene que responder `"database": "up"`), `/authors` y `/docs`.
+
+Railway ejecuta `npm install` y `npm start`, y define la variable `PORT` automáticamente.
 
 ## Uso de IA
 
