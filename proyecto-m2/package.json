@@ -7,7 +7,7 @@
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "test": "node --test",
-    "db:setup": "psql -U postgres -d bitacora -f sql/schema.sql -f sql/seed.sql"
+    "db:setup": "psql -U postgres -d bitacora -f sql/setup.sql -f sql/seed.sql"
   },
   "author": "Melanie Kamann",
   "license": "ISC",

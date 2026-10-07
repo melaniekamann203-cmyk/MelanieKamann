@@ -17,12 +17,12 @@ Proyecto Integrador del Módulo 2.
 proyecto-m2/
 ├── docs/openapi.json          # Documentación OpenAPI 3
 ├── sql/
-│   ├── schema.sql             # Tablas, relaciones e índices
+│   ├── setup.sql              # Tablas, relaciones e índices
 │   └── seed.sql               # Datos de ejemplo
 ├── src/
 │   ├── config/env.js          # Lectura de variables de entorno
 │   ├── db/index.js            # Pool de conexiones a PostgreSQL
-│   ├── models/                # Consultas SQL (autores y posts)
+│   ├── services/              # Consultas SQL parametrizadas (autores y posts)
 │   ├── validators/            # Validación de los datos del body
 │   ├── controllers/           # Lógica de cada endpoint
 │   ├── routes/                # Definición de rutas
@@ -35,7 +35,7 @@ proyecto-m2/
 └── package.json
 ```
 
-La responsabilidad está separada en capas: **rutas → controladores → modelos**. Los controladores lanzan un `HttpError` y un único `errorHandler` arma todas las respuestas de error.
+La responsabilidad está separada en capas: **rutas → controladores → services**. Los controladores lanzan un `HttpError` y un único `errorHandler` arma todas las respuestas de error.
 
 ## Instalación
 
@@ -49,7 +49,7 @@ La responsabilidad está separada en capas: **rutas → controladores → modelo
    createdb -U postgres bitacora
    npm run db:setup
    ```
-   (o ejecutar `sql/schema.sql` y `sql/seed.sql` desde pgAdmin)
+   (o ejecutar `sql/setup.sql` y `sql/seed.sql` desde pgAdmin)
 4. Iniciar el servidor:
    ```bash
    npm start        # producción
@@ -154,7 +154,7 @@ npm test
 
 La app lee `DATABASE_URL` si existe (Railway, Render, etc.), así que para desplegarla basta con:
 
-1. Crear un servicio de PostgreSQL y ejecutar `sql/schema.sql` y `sql/seed.sql`.
+1. Crear un servicio de PostgreSQL y ejecutar `sql/setup.sql` y `sql/seed.sql`.
 2. Crear el servicio de la app desde el repositorio, con esta carpeta como *Root Directory*.
 3. Definir la variable `DATABASE_URL` con la conexión de la base de datos.
 
