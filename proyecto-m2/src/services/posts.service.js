@@ -1,5 +1,7 @@
 const db = require("../db");
 
+// Todas las consultas usan parámetros ($1, $2...): los datos nunca se concatenan al SQL
+
 // Cada post se devuelve con un resumen de su autor
 const SELECT_WITH_AUTHOR = `
   SELECT p.*,
@@ -8,22 +10,15 @@ const SELECT_WITH_AUTHOR = `
   JOIN authors a ON a.id = p.author_id
 `;
 
-async function findAll({ authorId, published } = {}) {
-  const conditions = [];
-  const params = [];
-
-  if (authorId !== undefined) {
-    params.push(authorId);
-    conditions.push(`p.author_id = $${params.length}`);
-  }
-
-  if (published !== undefined) {
-    params.push(published);
-    conditions.push(`p.published = $${params.length}`);
-  }
-
-  const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
-  const { rows } = await db.query(`${SELECT_WITH_AUTHOR} ${where} ORDER BY p.created_at DESC, p.id DESC`, params);
+// Los filtros son opcionales: si llegan en null, esa condición no filtra nada
+async function findAll({ authorId = null, published = null } = {}) {
+  const { rows } = await db.query(
+    `${SELECT_WITH_AUTHOR}
+     WHERE ($1::int IS NULL OR p.author_id = $1)
+       AND ($2::boolean IS NULL OR p.published = $2)
+     ORDER BY p.created_at DESC, p.id DESC`,
+    [authorId, published]
+  );
   return rows;
 }
 
@@ -42,15 +37,13 @@ async function create({ author_id, title, content, published = false }) {
   return findById(rows[0].id);
 }
 
-// Actualiza solo los campos recibidos y refresca updated_at
-async function update(id, fields) {
-  const columns = Object.keys(fields);
-  const assignments = columns.map((column, i) => `${column} = $${i + 1}`);
-  assignments.push("updated_at = NOW()");
-
+async function update(id, { author_id, title, content, published = false }) {
   const { rows } = await db.query(
-    `UPDATE posts SET ${assignments.join(", ")} WHERE id = $${columns.length + 1} RETURNING id`,
-    [...Object.values(fields), id]
+    `UPDATE posts
+     SET author_id = $1, title = $2, content = $3, published = $4, updated_at = NOW()
+     WHERE id = $5
+     RETURNING id`,
+    [author_id, title, content, published, id]
   );
   return rows[0] ? findById(id) : null;
 }

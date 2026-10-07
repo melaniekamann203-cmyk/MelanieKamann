@@ -1,5 +1,5 @@
-const Author = require("../models/author.model");
-const Post = require("../models/post.model");
+const Author = require("../services/authors.service");
+const Post = require("../services/posts.service");
 const HttpError = require("../utils/HttpError");
 const { validateAuthor, cleanAuthor } = require("../validators/author.validator");
 
@@ -48,11 +48,11 @@ exports.replace = async (req, res) => {
   res.status(200).json(author);
 };
 
-// PATCH /authors/:id (actualización parcial)
+// PATCH /authors/:id (actualización parcial: se combinan los datos actuales con los enviados)
 exports.patch = async (req, res) => {
   assertValid(req.body, { partial: true });
-  const author = await Author.update(req.params.id, cleanAuthor(req.body));
-  if (!author) throw new HttpError(404, "author not found");
+  const current = await getAuthorOr404(req.params.id);
+  const author = await Author.update(req.params.id, { ...current, ...cleanAuthor(req.body) });
   res.status(200).json(author);
 };
 

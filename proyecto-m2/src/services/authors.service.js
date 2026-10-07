@@ -1,15 +1,14 @@
 const db = require("../db");
 
-async function findAll({ search } = {}) {
-  if (search) {
-    const { rows } = await db.query(
-      "SELECT * FROM authors WHERE name ILIKE $1 ORDER BY id",
-      [`%${search}%`]
-    );
-    return rows;
-  }
+// Todas las consultas usan parámetros ($1, $2...): los datos nunca se concatenan al SQL
 
-  const { rows } = await db.query("SELECT * FROM authors ORDER BY id");
+async function findAll({ search } = {}) {
+  const { rows } = await db.query(
+    `SELECT * FROM authors
+     WHERE $1::text IS NULL OR name ILIKE '%' || $1 || '%'
+     ORDER BY id`,
+    [search || null]
+  );
   return rows;
 }
 
@@ -26,14 +25,10 @@ async function create({ name, email, bio = null }) {
   return rows[0];
 }
 
-// Actualiza solo los campos recibidos (sirve para PUT y PATCH)
-async function update(id, fields) {
-  const columns = Object.keys(fields);
-  const assignments = columns.map((column, i) => `${column} = $${i + 1}`).join(", ");
-
+async function update(id, { name, email, bio = null }) {
   const { rows } = await db.query(
-    `UPDATE authors SET ${assignments} WHERE id = $${columns.length + 1} RETURNING *`,
-    [...Object.values(fields), id]
+    "UPDATE authors SET name = $1, email = $2, bio = $3 WHERE id = $4 RETURNING *",
+    [name, email, bio, id]
   );
   return rows[0] || null;
 }

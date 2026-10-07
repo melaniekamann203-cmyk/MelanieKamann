@@ -1,5 +1,5 @@
-const Post = require("../models/post.model");
-const Author = require("../models/author.model");
+const Post = require("../services/posts.service");
+const Author = require("../services/authors.service");
 const HttpError = require("../utils/HttpError");
 const { validatePost, cleanPost } = require("../validators/post.validator");
 
@@ -68,8 +68,9 @@ exports.replace = async (req, res) => {
 // PATCH /posts/:id (ej: { "published": true } para publicar un borrador)
 exports.patch = async (req, res) => {
   assertValid(req.body, { partial: true });
-  const post = await Post.update(req.params.id, cleanPost(req.body));
-  if (!post) throw new HttpError(404, "post not found");
+  const current = await Post.findById(req.params.id);
+  if (!current) throw new HttpError(404, "post not found");
+  const post = await Post.update(req.params.id, { ...current, ...cleanPost(req.body) });
   res.status(200).json(post);
 };
 
