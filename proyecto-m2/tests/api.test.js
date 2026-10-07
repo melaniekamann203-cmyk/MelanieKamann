@@ -102,6 +102,17 @@ describe("Authors", () => {
     assert.equal(res.body.bio, null);
   });
 
+  it("DELETE /authors/999999 (inexistente) responde 404", async () => {
+    const res = await request(app).delete("/authors/999999");
+    assert.equal(res.status, 404);
+    assert.equal(res.body.error, "author not found");
+  });
+
+  it("PATCH /authors/999999 (inexistente) responde 404", async () => {
+    const res = await request(app).patch("/authors/999999").send({ bio: "x" });
+    assert.equal(res.status, 404);
+  });
+
   it("PUT /authors/:id sin email responde 400", async () => {
     const res = await request(app).put(`/authors/${author.id}`).send({ name: "Sin email" });
     assert.equal(res.status, 400);
@@ -203,6 +214,17 @@ describe("Posts", () => {
 
     const get = await request(app).get(`/posts/${other.id}`);
     assert.equal(get.status, 404);
+  });
+
+  it("DELETE /posts/999999 (inexistente) responde 404", async () => {
+    const res = await request(app).delete("/posts/999999");
+    assert.equal(res.status, 404);
+    assert.equal(res.body.error, "post not found");
+  });
+
+  it("PATCH /posts/999999 (inexistente) responde 404", async () => {
+    const res = await request(app).patch("/posts/999999").send({ published: true });
+    assert.equal(res.status, 404);
   });
 
   it("GET /posts/author/999999 responde 404", async () => {
