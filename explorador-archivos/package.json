@@ -1,0 +1,15 @@
+{
+  "name": "explorador-archivos",
+  "version": "1.0.0",
+  "description": "Herramienta de línea de comandos que lista y analiza archivos del directorio de usuario",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "list:detailed": "node detallado.js",
+    "list:filter": "node filtrar.js",
+    "dev": "node --watch index.js"
+  },
+  "keywords": ["node", "fs", "npm-scripts"],
+  "author": "Melanie Kamann",
+  "license": "ISC"
+}

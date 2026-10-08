@@ -1,0 +1,26 @@
+{
+  "name": "bitacora-api",
+  "version": "1.0.0",
+  "description": "API REST de autores y publicaciones con Express y PostgreSQL",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test",
+    "db:init": "node scripts/db-init.js"
+  },
+  "author": "Melanie Kamann",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^18.0.6",
+    "express": "^5.2.1",
+    "pg": "^8.23.1",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "supertest": "^7.3.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

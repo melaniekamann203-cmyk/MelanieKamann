@@ -1,0 +1,16 @@
+{
+  "name": "movies-api",
+  "version": "1.0.0",
+  "description": "API REST de recomendación de películas con Express",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [],
+  "author": "Melanie Kamann",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
