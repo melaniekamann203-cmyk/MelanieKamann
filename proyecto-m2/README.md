@@ -50,7 +50,7 @@ La responsabilidad está separada en capas: **rutas → controladores → servic
    ```bash
    npm run db:init
    ```
-   Este script ejecuta `sql/setup.sql` y `sql/seed.sql` con la conexión del `.env`. También se pueden ejecutar esos archivos a mano desde pgAdmin.
+   Este script borra y vuelve a crear las tablas: ejecuta `sql/setup.sql` y `sql/seed.sql` con la conexión del `.env`. También se pueden ejecutar esos archivos a mano desde pgAdmin.
 5. Iniciar el servidor:
    ```bash
    npm start        # producción
@@ -169,11 +169,12 @@ npm test
 3. En el mismo proyecto, agregar una base de datos con **+ New → Database → PostgreSQL**.
 4. En el servicio de la app, ir a **Variables** y agregar `DATABASE_URL` con el valor `${{Postgres.DATABASE_URL}}` (Railway lo completa solo).
    - Si los logs muestran `The server does not support SSL connections`, agregar también `DB_SSL=false`.
-5. Inicializar la base de producción desde tu computadora: copiar la **`DATABASE_PUBLIC_URL`** del servicio de PostgreSQL (pestaña *Variables*) y ejecutar:
+5. Crear las tablas automáticamente: en el servicio de la app, ir a **Settings → Deploy → Pre-deploy Command** y escribir:
    ```bash
-   DATABASE_URL="la-url-publica-copiada" npm run db:init
+   npm run db:ensure
    ```
-   En Windows PowerShell: `$env:DATABASE_URL="la-url-publica-copiada"; npm run db:init`
+   En cada deploy, este comando crea las tablas y carga el seed **solo si todavía no existen**, así que nunca borra datos.
+   (Alternativa desde tu computadora: copiar la `DATABASE_PUBLIC_URL` del servicio Postgres y ejecutar `DATABASE_URL="..." npm run db:init`, que reinicia la base.)
 6. En **Settings → Networking**, hacer clic en **Generate Domain** para obtener la URL pública.
 7. Verificar que funcione abriendo `https://<tu-dominio>/health` (tiene que responder `"database": "up"`), `/authors` y `/docs`.
 
